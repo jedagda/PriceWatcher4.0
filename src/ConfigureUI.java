@@ -6,11 +6,30 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class ConfigureUI extends JFrame {
+
+    private static ConfigureUI configureUI;
+
     private JFrame mainFrame;
+
+    private JMenuBar menuBar;
+    private JMenu file;
+    private JMenu help;
+    private JMenuItem exit;
+    private JMenuItem add;
+    private JMenuItem about;
+
+    private JPanel controlPanel;
+    private JButton checkPrice;
+    private JButton addItem;
+
     private JLabel headerLabel;
     private JLabel statusLabel;
-    private JPanel controlPanel;
-    private JMenuBar menuBar;
+
+
+
+
+
+
 
 
     public ConfigureUI(){
@@ -18,7 +37,7 @@ public class ConfigureUI extends JFrame {
     }
 
     public static void main(String[] args){
-        ConfigureUI congfiguteUI = new ConfigureUI();
+        configureUI = new ConfigureUI();
 
     }
 
@@ -53,14 +72,24 @@ public class ConfigureUI extends JFrame {
 
     private void setMenuBar(){
         menuBar = new JMenuBar();
-
     }
 
     private void addMenuBarElements(){
-        JMenuItem file = new JMenuItem("File");
-        JMenuItem help = new JMenuItem("Help");
+        file = new JMenu("File");
+        help = new JMenu("Help");
+        exit = new JMenuItem("Exit");
+        exit.addActionListener(new ExitListener());
+        about = new JMenuItem("About");
+        add = new JMenuItem("Add");
+
         menuBar.add(file);
         menuBar.add(help);
+
+        file.add(add);
+        file.add(exit);
+
+        help.add(about);
+
     }
 
     private void addMainFrameElements(){
@@ -70,8 +99,8 @@ public class ConfigureUI extends JFrame {
     }
 
     private void addControlPanelElements(){
-        JButton checkPrice = new JButton("Check");
-        JButton addItem = new JButton("Add");
+        checkPrice = new JButton("Check");
+        addItem = new JButton("Add");
         checkPrice.setActionCommand("Check");
         addItem.setActionCommand("Add");
         checkPrice.addActionListener(new CheckButtonListener());
@@ -92,6 +121,7 @@ public class ConfigureUI extends JFrame {
         addMainFrameElements();
         addControlPanelElements();
         addMenuBarElements();
+        mainFrame.setJMenuBar(menuBar);
         mainFrame.setVisible(true);
 
     }
@@ -110,6 +140,15 @@ public class ConfigureUI extends JFrame {
             String command = actionEvent.getActionCommand();
             if(command.equals("Add")) {
                 statusLabel.setText("Item Added");
+            }
+        }
+    }
+
+    private class ExitListener implements ActionListener{
+        public void actionPerformed(ActionEvent actionEvent) {
+            String command = actionEvent.getActionCommand();
+            if (command.equals("Exit")) {
+                System.exit(0);
             }
         }
     }
