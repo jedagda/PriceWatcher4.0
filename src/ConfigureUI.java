@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+
 public class ConfigureUI extends JFrame {
 
     private static ConfigureUI configureUI;
@@ -18,22 +19,21 @@ public class ConfigureUI extends JFrame {
     private JMenuItem add;
     private JMenuItem about;
 
+    /** Message bar to display various messages. */
+    //private JLabel msgBar = new JLabel(" ");
+
     private JPanel controlPanel;
     private JButton checkPrice;
     private JButton addItem;
 
     private JLabel headerLabel;
-    private JLabel statusLabel;
+    private JLabel msgBar;
 
 
-
-
-
-
-
-
-    public ConfigureUI(){
+    private ConfigureUI(){
         prepareGUI();
+        showMessage("Welcome");
+        mainFrame.setVisible(true);
     }
 
     public static void main(String[] args){
@@ -52,8 +52,8 @@ public class ConfigureUI extends JFrame {
     }
 
     private void setStatusLabel(){
-        statusLabel = new JLabel("",JLabel.CENTER);
-        statusLabel.setSize(350,100);
+        msgBar = new JLabel("",JLabel.CENTER);
+        msgBar.setSize(350,100);
     }
 
     private void setCloser(){
@@ -93,9 +93,9 @@ public class ConfigureUI extends JFrame {
     }
 
     private void addMainFrameElements(){
-        mainFrame.add(headerLabel);
+//        mainFrame.add(headerLabel);
         mainFrame.add(controlPanel);
-        mainFrame.add(statusLabel);
+        mainFrame.add(msgBar);
     }
 
     private void addControlPanelElements(){
@@ -122,15 +122,29 @@ public class ConfigureUI extends JFrame {
         addControlPanelElements();
         addMenuBarElements();
         mainFrame.setJMenuBar(menuBar);
-        mainFrame.setVisible(true);
 
+
+    }
+
+    /** Show briefly the given string in the message bar. */
+    private void showMessage(String msg) {
+        msgBar.setText(msg);
+        new Thread(() -> {
+            try {
+                Thread.sleep(3 * 1000); // 3 seconds
+            } catch (InterruptedException e) {
+            }
+            if (msg.equals(msgBar.getText())) {
+                SwingUtilities.invokeLater(() -> msgBar.setText(" "));
+            }
+        }).start();
     }
 
     private class CheckButtonListener implements ActionListener{
         public void actionPerformed(ActionEvent actionEvent) {
             String command = actionEvent.getActionCommand();
             if (command.equals("Check")) {
-                statusLabel.setText("Price Checked");
+               showMessage("Price Checked");
             }
         }
     }
@@ -139,7 +153,7 @@ public class ConfigureUI extends JFrame {
         public void actionPerformed(ActionEvent actionEvent){
             String command = actionEvent.getActionCommand();
             if(command.equals("Add")) {
-                statusLabel.setText("Item Added");
+                showMessage("Item Added");
             }
         }
     }
