@@ -92,7 +92,7 @@ public class ConfigureUI extends JFrame {
         itemBoard.setSize(mainFrame.getMinimumSize());
         itemBoard.setLayout(new GridLayout(1,1));
     }
-
+    //push
     private void addMenuBarElements(){
         file = new JMenu();
         Icon icon = createImageIcon("icons/menu.png", "Menu");
