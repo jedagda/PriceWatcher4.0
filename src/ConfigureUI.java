@@ -18,6 +18,11 @@ public class ConfigureUI extends JFrame {
     private JMenu menu;
 
     /**
+     * The Tool Bar
+     */
+     ToolBar toolBar;
+
+    /**
      * List of menu actions of the menu bar
      * */
     private JMenuItem add;
@@ -78,8 +83,8 @@ public class ConfigureUI extends JFrame {
         setCloser();
         setItemBoard();
         setStatusLabel();
-
-        addControlPanelElements();
+        addControlPanel();
+        //addControlPanelElements();
         addMenuBarElements();
         addMainFrameElements();
 
@@ -105,6 +110,22 @@ public class ConfigureUI extends JFrame {
             }
         });
     }
+
+    private void addControlPanel(){
+        controlPanel = makeControlPanel();
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 16));
+    }
+
+    private JPanel makeControlPanel(){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        toolBar = new ToolBar();
+        toolBar.setMain(this);
+        panel.add(toolBar);
+        return panel;
+    }
+
+
+
     /**
      *  Sets the item board from where the items will be displayed
      */
