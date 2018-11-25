@@ -1,9 +1,16 @@
+import resources.Resources;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URL;
+
+
 
 
 public class ConfigureUI extends JFrame {
@@ -18,6 +25,8 @@ public class ConfigureUI extends JFrame {
     private JMenuItem exit;
     private JMenuItem add;
     private JMenuItem about;
+    private JPanel itemBoard = new JPanel();
+    private final static String IMAGE_DIR = "/icons/";
 
     /** Message bar to display various messages. */
     //private JLabel msgBar = new JLabel(" ");
@@ -28,6 +37,8 @@ public class ConfigureUI extends JFrame {
 
     private JLabel headerLabel;
     private JLabel msgBar;
+
+    private Resources image;
 
 
     private ConfigureUI(){
@@ -53,7 +64,7 @@ public class ConfigureUI extends JFrame {
 
     private void setStatusLabel(){
         msgBar = new JLabel("",JLabel.CENTER);
-        msgBar.setSize(350,100);
+        msgBar.setSize(350,50);
     }
 
     private void setCloser(){
@@ -74,8 +85,18 @@ public class ConfigureUI extends JFrame {
         menuBar = new JMenuBar();
     }
 
+    private void setItemBoard(){
+        itemBoard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10,16,0,16),
+                BorderFactory.createLineBorder(Color.GRAY)));
+        itemBoard.setSize(mainFrame.getMinimumSize());
+        itemBoard.setLayout(new GridLayout(1,1));
+    }
+
     private void addMenuBarElements(){
-        file = new JMenu("File");
+        file = new JMenu();
+        Icon icon = createImageIcon("icons/menu.png", "Menu");
+        file.setIcon(icon);
         help = new JMenu("Help");
         exit = new JMenuItem("Exit");
         exit.addActionListener(new ExitListener());
@@ -92,9 +113,20 @@ public class ConfigureUI extends JFrame {
 
     }
 
+    protected ImageIcon createImageIcon (String path, String description){
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon (imgURL, description);
+        } else {
+            System.err.println("Could't find file " + path);
+            return null;
+        }
+    }
+
     private void addMainFrameElements(){
-//        mainFrame.add(headerLabel);
+ //       mainFrame.add(headerLabel);
         mainFrame.add(controlPanel);
+        mainFrame.add(itemBoard);
         mainFrame.add(msgBar);
     }
 
@@ -118,6 +150,7 @@ public class ConfigureUI extends JFrame {
         setStatusLabel();
         setCloser();
         setControlPanel();
+        setItemBoard();
         addMainFrameElements();
         addControlPanelElements();
         addMenuBarElements();
@@ -165,6 +198,16 @@ public class ConfigureUI extends JFrame {
                 System.exit(0);
             }
         }
+    }
+
+    public Image getImage(String file) {
+        try {
+            URL url = new URL(getClass().getResource(IMAGE_DIR), file);
+            return ImageIO.read(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
