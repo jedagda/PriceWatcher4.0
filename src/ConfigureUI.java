@@ -63,6 +63,9 @@ public class ConfigureUI extends JFrame implements Trigger {
 
     private Listener listener = new Listener();
 
+    /** Special panel to display the watched item. */
+    private ItemView itemView;
+
     /**
      * Main Constructor of ConfigureUI class
      * */
@@ -136,6 +139,10 @@ public class ConfigureUI extends JFrame implements Trigger {
         itemBoard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(10,16,0,16),
                 BorderFactory.createLineBorder(Color.GRAY)));
+
+        itemView = new ItemView();
+        //itemView.setClickListener(this::viewPageClicked);
+        itemBoard.add(itemView);
 
         itemBoard.setLayout(new GridLayout(1,1));
         itemBoard.setSize(mainFrame.getMinimumSize());
