@@ -97,7 +97,7 @@ public class ConfigureUI extends JFrame implements Trigger {
     private void setMainFrame(){
         mainFrame = new JFrame("Price Watcher 4.0");
         mainFrame.setSize(400, 600);
-        mainFrame.setLayout(new GridLayout(4,1));
+        mainFrame.setLayout(new BorderLayout());
     }
 
     /**
@@ -153,9 +153,9 @@ public class ConfigureUI extends JFrame implements Trigger {
      * Adds the elements to the main frame
      */
     private void addMainFrameElements(){
-        mainFrame.add(controlPanel);
-        mainFrame.add(itemBoard);
-        mainFrame.add(msgBar);
+        mainFrame.add(controlPanel, BorderLayout.NORTH);
+        mainFrame.add(itemBoard,BorderLayout.CENTER);
+        mainFrame.add(msgBar,BorderLayout.SOUTH);
     }
 
     /**
