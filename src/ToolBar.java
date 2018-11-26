@@ -1,6 +1,8 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import resources.Resources;
 
@@ -31,7 +33,7 @@ public class ToolBar extends JPanel {
         addButtons(toolBar);
         //setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
-       // add(scrollPane, BorderLayout.CENTER);
+       // addItemDialog(scrollPane, BorderLayout.CENTER);
     }
 
     protected void addButtons (JToolBar toolBar){
@@ -54,6 +56,24 @@ public class ToolBar extends JPanel {
         button.setToolTipText(toolTipText);
         button.addActionListener(listener);
         return button;
+    }
+
+
+    ActionListener makeAddItemHandler(){
+        return new AddItemHandler();
+    }
+
+
+    class AddItemHandler implements ActionListener {
+        JDialog dialog;
+        public void actionPerformed(ActionEvent evt){
+            if(dialog == null){
+                dialog = new AddItemDialog(main);
+            }
+            dialog.setBounds(0,0,350,300);
+            dialog.show();
+        }
+
     }
 
 
