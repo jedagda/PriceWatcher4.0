@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class ConfigureUI extends JFrame {
+public class ConfigureUI extends JFrame implements Trigger {
 
     private static ConfigureUI configureUI;
     /** The main frame of Price Watcher 4.0 */
@@ -61,18 +61,19 @@ public class ConfigureUI extends JFrame {
      * */
     private Icon icon;
 
-    public static void main(String[] args){
-        configureUI = new ConfigureUI();
-
-    }
+    private Listener listener = new Listener();
 
     /**
      * Main Constructor of ConfigureUI class
      * */
-    private ConfigureUI(){
+    protected ConfigureUI(){
         prepareGUI();
         showMessage("Welcome to Price Watcher");
         mainFrame.setVisible(true);
+    }
+
+    public ConfigureUI getUI(){
+        return configureUI;
     }
 
     /**
@@ -120,6 +121,7 @@ public class ConfigureUI extends JFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         toolBar = new ToolBar();
         toolBar.setMain(this);
+
         panel.add(toolBar);
         return panel;
     }
@@ -164,32 +166,32 @@ public class ConfigureUI extends JFrame {
         resources = new Resources();
 
         menu = new JMenu();
-        icon = resources.createImageIcon("menu.png", "Menu");
+        icon = resources.createImageIcon("menu", "Menu");
         menu.setIcon(icon);
 
         add = new JMenuItem("Add");
-        icon = resources.createImageIcon("add.png", "Add Item");
+        icon = resources.createImageIcon("add", "Add Item");
         add.setIcon(icon);
         add.setActionCommand("Add");
-        add.addActionListener(new Listener());
+        add.addActionListener(listener);
 
         check = new JMenuItem("Check");
-        icon = resources.createImageIcon("check.png" , "Check Price");
+        icon = resources.createImageIcon("check" , "Check Price");
         check.setIcon(icon);
         check.setActionCommand("Check");
-        check.addActionListener(new Listener());
+        check.addActionListener(listener);
 
         about = new JMenuItem("About");
-        icon = resources.createImageIcon("about.png" , "About");
+        icon = resources.createImageIcon("about" , "About");
         about.setIcon(icon);
         about.setActionCommand("About");
-        about.addActionListener(new Listener());
+        about.addActionListener(listener);
 
 
         exit = new JMenuItem("Exit");
-        icon = resources.createImageIcon("exit.png", "Exit");
+        icon = resources.createImageIcon("exit", "Exit");
         exit.setIcon(icon);
-        exit.addActionListener(new Listener());
+        exit.addActionListener(listener);
 
         menuBar.add(menu);
         menu.add(add);
@@ -220,7 +222,7 @@ public class ConfigureUI extends JFrame {
     /** Show briefly the given string in the message bar.
      *  Code by: Yoonsik Cheon
      *  */
-    private void showMessage(String msg) {
+    protected void showMessage(String msg) {
         msgBar.setText(msg);
         new Thread(() -> {
             try {
@@ -233,51 +235,39 @@ public class ConfigureUI extends JFrame {
         }).start();
     }
 
+    public void triggerShowMessage(String msg){
+        showMessage(msg);
+    }
+
+    public void setListener(Listener listener){
+         this.listener = listener;
+    }
     /**
      * Adds and Item
      */
-    private void addItem(){
+    public void addItem(){
         showMessage("Item Added");
     }
 
     /**
      * Checks the price of the items added
      */
-    private void checkPrice(){
+    public void checkPrice(){
         showMessage("Price Checked");
     }
 
     /**
      * Displays About the program
      */
-    private void about(){
+    public void about(){
         showMessage("Display About");
     }
 
     /**
      * Exits the program with exit code 0
      */
-    private void exit(){
+    public void exit(){
         System.exit(0);
-    }
-
-    /**
-     *Listener for program
-     * */
-    private class Listener implements ActionListener{
-        public void actionPerformed(ActionEvent actionEvent) {
-            String command = actionEvent.getActionCommand();
-            if(command.equals("Add")){
-                addItem();
-            } else if (command.equals("Check")){
-                checkPrice();
-            } else if (command.equals("About")){
-                about();
-            } else if (command.equals("Exit")){
-                exit();
-            }
-
-        }
     }
 
 

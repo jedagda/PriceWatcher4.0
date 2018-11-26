@@ -1,31 +1,33 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
 
+import resources.Resources;
 
+public class ToolBar extends JPanel {
 
-public class ToolBar extends JPanel implements ActionListener {
-
-    static final private String ADDITEM = "add item";
-    static final private String CHECKPRICE = "check price";
-    static final private String INFO = "info";
+    static final private String ADDITEM = "Add";
+    static final private String CHECKPRICE = "Check";
+    static final private String ABOUT = "About";
     //private ItemView itemView;;
     private ConfigureUI main;
+    private Resources resources;
+    private Icon icon;
+    private  Listener listener;
 
-    public void setMain (ConfigureUI main){
+
+    protected void setMain (ConfigureUI main){
         this.main = main;
     }
 
+    
    // private AddItemDialog addItemDialog = new AddItemDialog();
 
 
     public ToolBar(){
         super(new BorderLayout());
 
-        JToolBar toolBar = new JToolBar("Still draggable");
+        JToolBar toolBar = new JToolBar("Price Watcher ToolBar");
         addButtons(toolBar);
         //setPreferredSize(new Dimension(450, 130));
         add(toolBar, BorderLayout.PAGE_START);
@@ -38,64 +40,21 @@ public class ToolBar extends JPanel implements ActionListener {
         toolBar.add(button);
         button = makeNavigationButton("add", ADDITEM, "Adds an Item", "Add Item");
         toolBar.add(button);
-        button.addActionListener(makeAddItemHandler());
-        button = makeNavigationButton("info", INFO, "View Information on applicaiton,", "View Info");
+        button = makeNavigationButton("about", ABOUT, "View Information on applicaiton,", "View Info");
         toolBar.add(button);
     }
 
-    protected JButton makeNavigationButton (String imageName, String actionCommand, String toolTipText, String altText){
-        String imgLocation = "/resources/images/" + imageName + ".png";
-        URL imageURL = ToolBar.class.getResource(imgLocation);
-
+    protected JButton makeNavigationButton (String iconName, String actionCommand, String toolTipText, String altText){
+        resources = new Resources();
+        listener = new Listener();
+        icon = resources.createImageIcon(iconName, toolTipText);
         JButton button = new JButton();
+        button.setIcon(icon);
         button.setActionCommand(actionCommand);
         button.setToolTipText(toolTipText);
-        button.addActionListener(this);
-
-        if(imageURL != null) {
-            button.setIcon(new ImageIcon(imageURL, altText));
-        } else {
-            button.setText(altText);
-            System.err.println("Resource not found: " +imgLocation);
-        }
+        button.addActionListener(listener);
         return button;
     }
-
-    public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-        if(CHECKPRICE.equals(cmd)){
-            checkButtonClicked(e);
-        }
-/*        else if(ADDITEM.equals(cmd)){
-            actionPerformed(e);
-        } */
-    }
-
-    ActionListener makeAddItemHandler(){
-        return new AddItemHandler();
-    }
-
-
-
-    private void checkButtonClicked(ActionEvent event) {
-
-        //item.setPrice(priceCrawler.randomPrice());
-        // itemView.repaint();
-    }
-
-    class AddItemHandler implements ActionListener {
-        JDialog dialog;
-        public void actionPerformed(ActionEvent evt){
-            if(dialog == null){
-               //dialog = new AddItemDialog(main);
-            }
-            dialog.setBounds(0,0,350,300);
-            dialog.show();
-        }
-
-    }
-
-
 
 
 }

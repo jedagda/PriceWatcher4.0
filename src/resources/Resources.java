@@ -29,7 +29,7 @@ public class Resources {
     }
 
     public ImageIcon createImageIcon(String path, String description){
-        java.net.URL imgURL = getClass().getResource(ICONS_DIR + path);
+        java.net.URL imgURL = getClass().getResource(ICONS_DIR + path+".png");
         if (imgURL != null) {
             return new ImageIcon (imgURL, description);
         } else {
