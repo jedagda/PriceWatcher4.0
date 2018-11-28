@@ -2,17 +2,14 @@ import javax.swing.*;
 
 public class Main {
     private JFrame main;
-    private Trigger trigger;
-    private ConfigureUI configureUI;
+    private UIBuilder UIBuilder;
 
 
     private Main() {
-        //trigger = new ConfigureUI();
+        //trigger = new UIBuilder();
         //trigger.setListener(new Listener());
         //main = trigger.getUI();
-        configureUI = new ConfigureUI();
-        configureUI.setListener(new Listener());
-        main = configureUI.getUI();
+        UIBuilder = new UIBuilder();
 
 
 
