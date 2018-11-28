@@ -3,6 +3,7 @@ import resources.Resources;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URI;
 import java.util.HashMap;
 
 
@@ -50,11 +51,6 @@ public class UIBuilder extends JFrame{
      * */
     private JPanel controlPanel;
 
-    /**
-     * Control Panel action buttons
-     * */
-    private JButton checkPrice;
-    private JButton addItem;
 
     /**
      * Messages will be displayed
@@ -97,17 +93,17 @@ public class UIBuilder extends JFrame{
     /**
      *  Prepares the GUI's layout
      * */
-    private void prepareGUI(){
+    private void prepareGUI() {
         setMainFrame();
         setCloser();
         setItemBoard();
         setStatusLabel();
         addControlPanel();
-        //addControlPanelElements();
         addMenuBarElements();
         addMainFrameElements();
 
         mainFrame.setJMenuBar(menuBar);
+
     }
     /**
      * Set's the main frame's title, dimensions, and layout
@@ -156,12 +152,51 @@ public class UIBuilder extends JFrame{
                 BorderFactory.createLineBorder(Color.GRAY)));
 
         itemView = new ItemView();
-        //itemView.setClickListener(this::viewPageClicked);
+        buildPopupMenu(itemView);
+       // itemView.setClickListener(this::viewPageClicked);
         itemBoard.add(itemView);
 
         itemBoard.setLayout(new GridLayout(1,1));
         itemBoard.setSize(mainFrame.getMinimumSize());
+
+
+
+
     }
+
+    private void buildPopupMenu(JPanel itemView){
+        JPopupMenu editMenu = new JPopupMenu();
+        editMenu.add(manufactureMenuItem("Update", mapOfActions));
+        editMenu.add(manufactureMenuItem("Edit",mapOfActions));
+        editMenu.add(manufactureMenuItem("Remove", mapOfActions));
+
+
+        itemView.setComponentPopupMenu(editMenu);
+        itemView.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3)
+                    editMenu.show(itemView, e.getX(), e.getY());
+                itemView.setBackground(new Color(166, 111, 166));
+            }
+        });
+
+    }
+
+    /** Callback to be invoked when the view-page icon is clicked.
+     * Launch a (default) web browser by supplying the URL of
+     * the item. */
+    private void viewPageClicked() {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+         //   URI oURL = new URI(item.getURL());
+         //   desktop.browse(oURL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        showMessage("View clicked!");
+    }
+
 
     /**    private Trigger trigger;
      * Sets the Status label which indicates what actions the program has taken
@@ -184,6 +219,7 @@ public class UIBuilder extends JFrame{
         mapOfActions = new HashMap<>();
         mapOfActions.put("Add", new String[]{"add" , "Add Item" , "Add", "Adds an Item"});
         mapOfActions.put("Remove", new String[]{"remove", "Remove Item" , "Remove","Removes an Item"});
+        mapOfActions.put("Edit", new String[]{"edit", "Edit Item", "Edit", "Edits an Item"});
         mapOfActions.put("Update",new String[]{"update", "Update Item" , "Update", "Updates a single item"});
         mapOfActions.put("Check", new String[]{"check", "Check Price", "Check", "Checks price of all items"});
         mapOfActions.put("Sort", new String[]{"sort", "Sort by Price" , "Sort", "Sort the Items by Price"});
@@ -267,11 +303,11 @@ public class UIBuilder extends JFrame{
 
         JPopupMenu popupMenu;
 
-        PopupMenu() {
+        PopupMenu(){
             Container c = getContentPane();
             popupMenu = new JPopupMenu("Edit");
 
-           // popupMenu.add(manufactureMenuItem("Add", mapOfActions));
+            popupMenu.add(new JMenuItem("Add"));
            // popupMenu.add(manufactureMenuItem("Remove", mapOfActions));
           //  popupMenu.add(manufactureMenuItem("Edit", mapOfActions));
 
@@ -326,11 +362,6 @@ public class UIBuilder extends JFrame{
             toolBar.add(manufactureButton("About", mapOfActions));
         }
 
-
-
-        ActionListener makeAddItemHandler(){
-            return new AddItemHandler();
-        }
 
 
         class AddItemHandler implements ActionListener {

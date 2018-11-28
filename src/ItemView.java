@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /** A special panel to display the detail of an item. */
 
 @SuppressWarnings("serial")
 public class ItemView extends JPanel {
+
+    JPanel itemPanel;
 
     /** Interface to notify a click on the view page icon. */
     public interface ClickListener {
@@ -30,14 +32,23 @@ public class ItemView extends JPanel {
 
     /** Create a new instance. */
     public ItemView() {
-        setBackground(Color.WHITE);
+        itemPanel = new JPanel();
+        itemPanel.setBackground(Color.WHITE);
+
+
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (isViewPageClicked(e.getX(), e.getY()) && listener != null) {
                     listener.clicked();
+                    itemPanel.setBackground(Color.BLUE);
+                    System.out.println("Clicked");
+
+
                 }
             }
         });
+
+
     }
 
     /** Set the view-page click listener. */
