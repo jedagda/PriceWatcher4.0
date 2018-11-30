@@ -6,9 +6,7 @@ public class Main {
 
 
     private Main() {
-        //trigger = new UIBuilder();
-        //trigger.setListener(new Listener());
-        //main = trigger.getUI();
+
         UIBuilder = new UIBuilder();
 
 

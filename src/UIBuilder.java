@@ -1,3 +1,5 @@
+import item.Item;
+import item.ItemManager;
 import resources.Resources;
 
 import javax.swing.*;
@@ -75,6 +77,19 @@ public class UIBuilder extends JFrame{
     private HashMap<String, String[]> mapOfActions;
 
     private PopupMenu pop = new PopupMenu();
+
+    private ItemManager itemManager = listSample();
+
+    private JList<Item> itemList;
+
+
+    public ItemManager listSample(){
+        ItemManager itemManager = new ItemManager();
+        itemManager.addItem(new Item("Ghost In the Wires","https://www.amazon.com/Ghost-Wires-Adventures-Worlds-Wanted/dp/0316037729/" ,"4/24/12","gitw"));
+        itemManager.addItem(new Item("Snow Crash","https://www.amazon.com/Snow-Crash-Neal-Stephenson/dp/0553380958" ,"4/02/00","snow-crash"));
+        return itemManager;
+    }
+
     /**
      * Main Constructor of UIBuilder class
      * */
@@ -146,22 +161,38 @@ public class UIBuilder extends JFrame{
      *  Sets the item board from where the items will be displayed
      */
     private void setItemBoard(){
-        itemBoard = new JPanel();
-        itemBoard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10,16,0,16),
-                BorderFactory.createLineBorder(Color.GRAY)));
 
-        itemView = new ItemView();
-        buildPopupMenu(itemView);
-       // itemView.setClickListener(this::viewPageClicked);
-        itemBoard.add(itemView);
+        itemBoard = new JPanel();
+        itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
+
+      //  ItemRenderer itemRenderer = new ItemRenderer();
+        itemList = convertListToJList(itemManager);
+        itemList.setFixedCellHeight(160);
+        itemList.setCellRenderer(new ItemRenderer());
+        itemBoard.add(itemList);
+       // setItemList(itemManager);
 
         itemBoard.setLayout(new GridLayout(1,1));
-        itemBoard.setSize(mainFrame.getMinimumSize());
+      //  itemBoard.setSize(mainFrame.getMinimumSize());
 
 
 
+    }
 
+    public void setItemList(ItemManager itemManager){
+        itemList = convertListToJList(itemManager);
+        itemList.setFixedCellHeight(160);
+        itemList.setCellRenderer(new ItemRenderer());
+    }
+
+    public JList<Item> convertListToJList(ItemManager itemManager){
+        DefaultListModel<Item> listModel = new DefaultListModel<>();
+        for(int i = 0; i < itemManager.count(); i++){
+            System.out.println(itemManager.getItems().get(i).getName());
+            listModel.addElement(itemManager.getItemAtI(i));
+        }
+        itemList = new JList<>(listModel);
+        return itemList;
     }
 
     private void buildPopupMenu(JPanel itemView){
@@ -169,7 +200,6 @@ public class UIBuilder extends JFrame{
         editMenu.add(manufactureMenuItem("Update", mapOfActions));
         editMenu.add(manufactureMenuItem("Edit",mapOfActions));
         editMenu.add(manufactureMenuItem("Remove", mapOfActions));
-
 
         itemView.setComponentPopupMenu(editMenu);
         itemView.addMouseListener(new MouseAdapter() {
@@ -363,7 +393,6 @@ public class UIBuilder extends JFrame{
         }
 
 
-
         class AddItemHandler implements ActionListener {
             JDialog dialog;
             public void actionPerformed(ActionEvent evt){
@@ -398,43 +427,6 @@ public class UIBuilder extends JFrame{
 
         }
 
-        public void checkClicked(ActionEvent e){
-            System.out.println("Check");
-            showMessage("Check");
-        }
-
-        private void addClicked(ActionEvent e){
-            System.out.println("Add");
-            showMessage("Add");
-        }
-
-        private void removeClicked(ActionEvent e){
-            System.out.println("Remove");
-            showMessage("Removed item");
-        }
-
-        private void editClicked(ActionEvent e){
-            System.out.println("Edit");
-            showMessage("Edit");
-        }
-
-        private void aboutClicked(ActionEvent e){
-            System.out.println("Check");
-            showMessage("Check");
-        }
-        private void exitClicked(ActionEvent e){
-            System.out.println("Exit");
-            showMessage("Exit");
-        }
-        private void updateClicked(ActionEvent e){
-            System.out.println("Update");
-            showMessage("Update");
-        }
-
-        private void sortClicked(ActionEvent e){
-            System.out.println("Check");
-            showMessage("Check");
-        }
 
         JDialog dialog;
         public void addItemDialog(ActionEvent evt){
