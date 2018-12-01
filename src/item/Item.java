@@ -124,7 +124,7 @@ public class Item {
         return Double.toString(price);
     }
 
-    public String getPriceChangeToString(){
+    public String getPriceChange(){
         return Double.toString(getChange());
     }
 

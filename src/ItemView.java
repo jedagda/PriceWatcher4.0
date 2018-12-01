@@ -3,6 +3,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,7 +14,8 @@ import item.Item;
 @SuppressWarnings("serial")
 public class ItemView extends JPanel {
 
-    JPanel itemPanel;
+    private JPanel itemPanel;
+    private  DecimalFormat decimalFormat = new DecimalFormat("###.##");
 
     private Item item;
 
@@ -112,15 +114,19 @@ public class ItemView extends JPanel {
         g.setFont(new Font("Serif",Font.BOLD,12));
         g.drawString("Added:", x , y);
         g.setFont(new Font("Sans-Serif",Font.PLAIN,12));
-        g.drawString(item.getDateAdded() + "    "+ "(" + "$"+item.getInitialPrice()+ ")", x+75, y);
+        g.drawString(item.getDateAdded() + "    "+ "(" + "$"+ decimalFormat.format(item.getInitialPrice())+ ")", x+75, y);
     }
 
     private void paintChange(Graphics g, int x, int y) {
         g.setFont(new Font("Serif",Font.BOLD,12));
         g.drawString("Change:", x , y);
         g.setFont(new Font("Sans-Serif",Font.PLAIN,12));
-        g.setColor(Color.BLUE);
-        g.drawString(item.getPriceChangeToString(), x+75, y);
+        if(item.getChange() <= 0 ){
+            g.setColor(Color.BLUE);
+        } else {
+            g.setColor(Color.RED);
+        }
+        g.drawString( decimalFormat.format(item.getChange()) + "%", x+75, y);
     }
 
     private void paintPrice(Graphics g, int x, int y) {
@@ -128,7 +134,7 @@ public class ItemView extends JPanel {
         g.drawString("Price:", x , y);
         g.setFont(new Font("Sans-Serif",Font.PLAIN,12));
         String cP = "$" + String.format("");
-        g.drawString("$" + Double.toString(item.getPrice()), x+75, y);
+        g.drawString("$" +  decimalFormat.format(item.getPrice()), x+75, y);
     }
 
     private void paintName(Graphics g, int x, int y, String s, String name) {

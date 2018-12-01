@@ -1,3 +1,4 @@
+import controller.PriceCrawler;
 import item.Item;
 import item.ItemManager;
 import resources.Resources;
@@ -165,15 +166,15 @@ public class UIBuilder extends JFrame{
         itemBoard = new JPanel();
         itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
 
-      //  ItemRenderer itemRenderer = new ItemRenderer();
         itemList = convertListToJList(itemManager);
         itemList.setFixedCellHeight(160);
         itemList.setCellRenderer(new ItemRenderer());
         itemBoard.add(itemList);
-       // setItemList(itemManager);
+
+
 
         itemBoard.setLayout(new GridLayout(1,1));
-      //  itemBoard.setSize(mainFrame.getMinimumSize());
+       // itemBoard.setSize(mainFrame.getMinimumSize());
 
 
 
@@ -193,6 +194,10 @@ public class UIBuilder extends JFrame{
         }
         itemList = new JList<>(listModel);
         return itemList;
+    }
+
+    public ItemManager getItemManager(){
+        return itemManager;
     }
 
     private void buildPopupMenu(JPanel itemView){
@@ -382,7 +387,7 @@ public class UIBuilder extends JFrame{
             addButtons(toolBar);
             //setPreferredSize(new Dimension(450, 130));
             add(toolBar, BorderLayout.PAGE_START);
-            // addItemDialog(scrollPane, BorderLayout.CENTER);
+           // addItemDialog(scrollPane, BorderLayout.CENTER);
         }
 
         protected void addButtons (JToolBar toolBar){
@@ -416,8 +421,12 @@ public class UIBuilder extends JFrame{
                 addItemDialog(actionEvent);
                 showMessage("Item Added");
             } else if (command.equals("Check")) {
-                System.out.println("Check");
-                 showMessage("Check");
+                PriceCrawler priceCrawler = new PriceCrawler();
+                for(int i = 0; i < itemManager.count(); i++){
+                    itemManager.getItems().get(i).setPrice(priceCrawler.randomPrice());
+                }
+                showMessage("New Price Obtained");
+                itemList.setCellRenderer(new ItemRenderer());
             } else if (command.equals("About")) {
                 aboutAppDialog(actionEvent);
                 showMessage("Display About");
