@@ -168,12 +168,22 @@ public class UIBuilder extends JFrame{
         itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
 
         itemList = convertListToJList(itemManager);
-        itemList.setFixedCellHeight(160);
+        itemList.setFixedCellHeight(120);
         itemList.setCellRenderer(new ItemRenderer());
         itemBoard.add(itemList);
         itemBoard.setLayout(new GridLayout(1,1));
        // itemBoard.setSize(mainFrame.getMinimumSize());
 
+    }
+
+    private void updateBoard(ItemManager itemManager){
+        itemList = convertListToJList(itemManager);
+        itemList.setFixedCellHeight(120);
+        if(itemBoard.getComponentCount() > 0){
+            itemBoard.remove(0);
+        }
+        itemBoard.add(itemList);
+        itemList.setCellRenderer(new ItemRenderer());
     }
 
     public void setItemList(JPanel board, ItemManager itemManager){
@@ -439,10 +449,11 @@ public class UIBuilder extends JFrame{
             } else if (command.equals("Check")) {
                 PriceCrawler priceCrawler = new PriceCrawler();
                 for(int i = 0; i < itemManager.count(); i++){
-                    itemManager.getItems().get(i).setPrice(priceCrawler.randomPrice());
+                    itemManager.getItemAtI(i).setPrice(priceCrawler.randomPrice());
+                    System.out.println(itemManager.getItemAtI(i).getPrice());
                 }
+                updateBoard(itemManager);
                 showMessage("New Price Obtained");
-                itemList.setCellRenderer(new ItemRenderer());
             } else if (command.equals("About")) {
                 aboutAppDialog(actionEvent);
                 showMessage("Display About");

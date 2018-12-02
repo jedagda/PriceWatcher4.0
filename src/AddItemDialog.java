@@ -56,7 +56,6 @@ public class AddItemDialog extends JDialog {
             String label = button.getText();
             if("Add".equals(label)){
                 itemManager.addItem(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
-//                ui.setItemList(itemManager);
                 listModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
                 itemList.repaint();
                 System.out.println("Item Added");
