@@ -14,17 +14,17 @@ public class AddItemDialog extends JDialog {
     private AddItemDialogPanel dialogPanel;
     private UIBuilder ui;
     private ItemManager itemManager;
+    private JList itemList;
+    private DefaultListModel<Item> listModel;
 
    // private ItemManager itemManager;
 
-    public void setUI (UIBuilder ui){
-        this.ui = ui;
-    }
 
-    public AddItemDialog(JFrame owner){
+    public AddItemDialog(JFrame owner, ItemManager itemManager, JList itemList, DefaultListModel<Item> listMode){
         super(owner, true);
-        ui =(UIBuilder)owner;
-        itemManager = ui.getItemManager();
+        this.itemManager= itemManager;
+        this.itemList = itemList;
+        this.listModel = listMode;
         setTitle("Add New Item");
         addButton = new JButton("Add");
         cancelButton = new JButton("Cancel");
@@ -41,22 +41,25 @@ public class AddItemDialog extends JDialog {
         getContentPane().add(dialogPanel, BorderLayout.CENTER);
     }
 
+    public ItemManager setItemManager(){
+        return this.itemManager;
+    }
+
 /*    public void printList(ItemManager itemManager){
         for (int i = 0; i < itemManager.count(); i++ ){
             System.out.println(itemManager.getItemAtI(i).getName());
         }
     } */
-
-
     class ButtonHandler implements ActionListener{
         public void actionPerformed(ActionEvent evt){
             JButton button = (JButton) evt.getSource();
             String label = button.getText();
             if("Add".equals(label)){
-                itemManager.addItem(new Item(dialogPanel.nameField.getText(),
-                        dialogPanel.urlField.getText()));
+                itemManager.addItem(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
+//                ui.setItemList(itemManager);
+                listModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
+                itemList.repaint();
                 System.out.println("Item Added");
-                ui.setItemList(itemManager);
 
             }
             dialogPanel.reset();

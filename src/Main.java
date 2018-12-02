@@ -1,13 +1,17 @@
+import item.ItemManager;
+
 import javax.swing.*;
 
 public class Main {
     private JFrame main;
     private UIBuilder UIBuilder;
+    private ItemManager itemManager = new ItemManager();
 
 
     private Main() {
 
-        UIBuilder = new UIBuilder();
+        UIBuilder = new UIBuilder(itemManager);
+
 
 
 

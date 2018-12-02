@@ -79,28 +79,27 @@ public class UIBuilder extends JFrame{
 
     private PopupMenu pop = new PopupMenu();
 
-    private ItemManager itemManager = listSample();
+    private ItemManager itemManager = new ItemManager();
 
     private JList<Item> itemList;
 
+    private  DefaultListModel<Item> listModel;
 
-    public ItemManager listSample(){
-        ItemManager itemManager = new ItemManager();
-        itemManager.addItem(new Item("Ghost In the Wires","https://www.amazon.com/Ghost-Wires-Adventures-Worlds-Wanted/dp/0316037729/" ,"4/24/12","gitw"));
-        itemManager.addItem(new Item("Snow Crash","https://www.amazon.com/Snow-Crash-Neal-Stephenson/dp/0553380958" ,"4/02/00","snow-crash"));
-        return itemManager;
-    }
+
+
 
     /**
      * Main Constructor of UIBuilder class
      * */
-    protected UIBuilder(){
+    protected UIBuilder(ItemManager itemManager){
         mapOfActions = actionMapLoader();
-        prepareGUI();
+        prepareGUI(itemManager);
        // mainFrame.add(pop);
         showMessage("Welcome to Price Watcher");
         mainFrame.setVisible(true);
     }
+
+
 
     public UIBuilder getUI(){
         return UIBuilder;
@@ -109,18 +108,20 @@ public class UIBuilder extends JFrame{
     /**
      *  Prepares the GUI's layout
      * */
-    private void prepareGUI() {
+    private void prepareGUI(ItemManager itemManager) {
         setMainFrame();
         setCloser();
-        setItemBoard();
+        setItemBoard(itemManager);
         setStatusLabel();
         addControlPanel();
         addMenuBarElements();
         addMainFrameElements();
 
         mainFrame.setJMenuBar(menuBar);
-
     }
+
+
+
     /**
      * Set's the main frame's title, dimensions, and layout
      * */
@@ -161,7 +162,7 @@ public class UIBuilder extends JFrame{
     /**
      *  Sets the item board from where the items will be displayed
      */
-    private void setItemBoard(){
+    private void setItemBoard(ItemManager itemManager){
 
         itemBoard = new JPanel();
         itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
@@ -170,26 +171,36 @@ public class UIBuilder extends JFrame{
         itemList.setFixedCellHeight(160);
         itemList.setCellRenderer(new ItemRenderer());
         itemBoard.add(itemList);
-
-
-
         itemBoard.setLayout(new GridLayout(1,1));
        // itemBoard.setSize(mainFrame.getMinimumSize());
 
-
-
     }
 
-    public void setItemList(ItemManager itemManager){
+    public void setItemList(JPanel board, ItemManager itemManager){
         itemList = convertListToJList(itemManager);
         itemList.setFixedCellHeight(160);
+        JScrollPane listScroll = new JScrollPane(itemList);
+        if(board.getComponentCount() > 0){
+            board.remove(0);
+        }
+        board.add(listScroll);
+        board.updateUI();
         itemList.setCellRenderer(new ItemRenderer());
     }
 
+    public void rePrintItemBoard(ItemManager itemManager){
+        setItemBoard(itemManager);
+    }
+
+    public void setItemList(ItemManager itemManager){
+        setItemBoard(itemManager);
+    }
+
     public JList<Item> convertListToJList(ItemManager itemManager){
-        DefaultListModel<Item> listModel = new DefaultListModel<>();
+        listModel = new DefaultListModel<>();
         for(int i = 0; i < itemManager.count(); i++){
-            System.out.println(itemManager.getItems().get(i).getName());
+
+         //   System.out.println(itemManager.getItems().get(i).getName());
             listModel.addElement(itemManager.getItemAtI(i));
         }
         itemList = new JList<>(listModel);
@@ -199,6 +210,11 @@ public class UIBuilder extends JFrame{
     public ItemManager getItemManager(){
         return itemManager;
     }
+
+    public JPanel getItemBoard(){
+        return this.itemBoard;
+    }
+
 
     private void buildPopupMenu(JPanel itemView){
         JPopupMenu editMenu = new JPopupMenu();
@@ -398,17 +414,17 @@ public class UIBuilder extends JFrame{
         }
 
 
-        class AddItemHandler implements ActionListener {
+    /*    class AddItemHandler implements ActionListener {
             JDialog dialog;
             public void actionPerformed(ActionEvent evt){
                 if(dialog == null){
-                    dialog = new AddItemDialog(main);
+                    dialog = new AddItemDialog(main, itemManager);
                 }
                 dialog.setBounds(0,0,350,300);
                 dialog.show();
             }
 
-        }
+        }*/
 
 
     }
@@ -438,15 +454,16 @@ public class UIBuilder extends JFrame{
 
 
         JDialog dialog;
-        public void addItemDialog(ActionEvent evt){
+        private void addItemDialog(ActionEvent evt){
+            AddItemDialog addItemDialog = new AddItemDialog(UIBuilder.this, itemManager, itemList, listModel);
             if(dialog == null){
-                dialog = new AddItemDialog(mainFrame);
+                dialog = addItemDialog;
             }
             dialog.setBounds(0,0,350,300);
             dialog.show();
         }
 
-        public void aboutAppDialog(ActionEvent evt){
+        private void aboutAppDialog(ActionEvent evt){
             if(dialog == null){
                 dialog = new AboutAppDialog(mainFrame);
             }

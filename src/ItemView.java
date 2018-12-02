@@ -40,7 +40,6 @@ public class ItemView extends JPanel {
     public ItemView() {
         new JPanel();
         setBackground(Color.WHITE);
-        System.out.println("one");
 /*
 
         addMouseListener(new MouseAdapter() {
@@ -90,7 +89,6 @@ public class ItemView extends JPanel {
             //displays image of item
         if(item != null) {
 
-            System.out.println("Paint");
             paintName(g, x, y, "Name:", item.getName());
             y += lineGap;
             paintURL(g, x, y, "URL:", item.getURL());
@@ -101,7 +99,7 @@ public class ItemView extends JPanel {
             y += lineGap;
             paintDate(g, x, y);
         } else {
-            System.out.println("Do Nothing");
+
         }
 
 
