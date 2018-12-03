@@ -110,8 +110,12 @@ public class UIBuilder extends JFrame{
         itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
         itemJList = new JList<>(itemListModel);
         itemJList.setFixedCellHeight(120);
+
         itemJList.setCellRenderer(new ItemRenderer());
         itemBoard.add(itemJList);
+        /* works but not right Fix Later */
+        itemBoard.add(new JScrollPane(itemJList));
+        buildPopupMenu(itemJList);
         itemBoard.setLayout(new GridLayout(1,1));
     }
 
@@ -152,18 +156,47 @@ public class UIBuilder extends JFrame{
 
 
 
-    private void buildPopupMenu(JPanel itemView){
+    private void buildPopupMenu(JList jList){
         JPopupMenu editMenu = new JPopupMenu();
+
         editMenu.add(manufactureMenuItem("Update", mapOfActions));
         editMenu.add(manufactureMenuItem("Edit",mapOfActions));
+
         editMenu.add(manufactureMenuItem("Remove", mapOfActions));
 
-        itemView.setComponentPopupMenu(editMenu);
-        itemView.addMouseListener(new MouseAdapter() {
+        JMenuItem remove = new JMenuItem("Remove");
+        remove.setActionCommand("Remove");
+        remove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = jList.getSelectedIndex();
+                itemListModel.removeElementAt(index);
+            }
+        });
+        editMenu.add(remove);
+
+
+        jList.setComponentPopupMenu(editMenu);
+
+        jList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if(e.getButton() == MouseEvent.BUTTON3)
-                    editMenu.show(itemView, e.getX(), e.getY());
-                itemView.setBackground(new Color(166, 111, 166));
+                JList theList = (JList) e.getSource();
+                if(e.getClickCount() == 2){
+                    int index = theList.locationToIndex(e.getPoint());
+                    if(index >= 0 ){
+                        Object o = theList.getModel().getElementAt(index);
+                        System.out.println("Double CLicked on: " + o.toString());
+                    }
+                }
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    editMenu.show(jList, e.getX(), e.getY());
+                    int index = theList.locationToIndex(e.getPoint());
+                    if(index >= 0 ){
+                        Object o = theList.getModel().getElementAt(index);
+                        System.out.println("Double CLicked on: " + o.toString());
+                    }
+                }
+
             }
         });
 
@@ -328,7 +361,7 @@ public class UIBuilder extends JFrame{
         }
 
 
-        // private AddItemDialog addItemDialog = new AddItemDialog();
+        // private ItemDialog addItemDialog = new ItemDialog();
 
 
         public ToolBar(){
@@ -353,7 +386,7 @@ public class UIBuilder extends JFrame{
             JDialog dialog;
             public void actionPerformed(ActionEvent evt){
                 if(dialog == null){
-                    dialog = new AddItemDialog(main, itemManager);
+                    dialog = new ItemDialog(main, itemManager);
                 }
                 dialog.setBounds(0,0,350,300);
                 dialog.show();
@@ -373,16 +406,52 @@ public class UIBuilder extends JFrame{
                 addItemDialog(actionEvent);
                 showMessage("Item Added");
 
+            } else if(command.equals("Remove")) {
+
+                int index = itemJList.getSelectedIndex();
+                itemListModel.removeElementAt(index);
+                showMessage("Item Removed");
+
+            } else if (command.equals("Edit")){
+                int index = itemJList.getSelectedIndex();
+                editItemDialog(actionEvent);
+                showMessage("Item Edited");
+
+
+
             } else if (command.equals("Check")) {
 
                 PriceCrawler priceCrawler = new PriceCrawler();
-                for(int i = 0; i < itemListModel.getSize(); i++){
+                for (int i = 0; i < itemListModel.getSize(); i++) {
                     itemListModel.getElementAt(i).setPrice(priceCrawler.randomPrice());
                     System.out.println(itemListModel.getElementAt(i).getPrice());
                 }
                 itemJList.repaint();
-
                 showMessage("New Price Obtained");
+
+            } else if(command.equals("Update")) {
+                PriceCrawler priceCrawler = new PriceCrawler();
+                int index = itemJList.getSelectedIndex();
+                itemListModel.getElementAt(index).setPrice(priceCrawler.randomPrice());
+                showMessage("New Price Obtained for: " + itemListModel.getElementAt(index).getName());
+
+            } else if (command.equals("Sort")){
+                ItemListModel sortedItemListModel = new ItemListModel();
+                System.out.println("Sort");
+                for(int i = 0; i < itemListModel.getSize(); i++){
+                    System.out.println(i);
+                    for(int j = 1; j < itemListModel.getSize(); j++){
+                        if(itemListModel.getElementAt(i).getPrice() > itemListModel.getElementAt(j).getPrice()){
+                            System.out.println("yes");
+                            sortedItemListModel.addElement(itemListModel.getElementAt(i));
+                        }
+                    }
+                }
+                itemListModel = new ItemListModel(sortedItemListModel);
+                itemJList.repaint();
+
+
+
             } else if (command.equals("About")) {
                 aboutAppDialog(actionEvent);
                 showMessage("Display About");
@@ -394,10 +463,19 @@ public class UIBuilder extends JFrame{
 
 
         JDialog dialog;
-        private void addItemDialog(ActionEvent evt){
-            AddItemDialog addItemDialog = new AddItemDialog(UIBuilder.this, itemJList, itemListModel);
+        private void editItemDialog(ActionEvent evt){
+            int index = itemJList.getSelectedIndex();
+            ItemDialog editItemDialog = new ItemDialog(UIBuilder.this, itemJList, itemListModel, index);
             if(dialog == null){
-                dialog = addItemDialog;
+                dialog = editItemDialog;
+            }
+            dialog.setBounds(0,0,350,300);
+            dialog.show();
+        }
+        private void addItemDialog(ActionEvent evt){
+            ItemDialog itemDialog = new ItemDialog(UIBuilder.this, itemJList, itemListModel);
+            if(dialog == null){
+                dialog = itemDialog;
             }
             dialog.setBounds(0,0,350,300);
             dialog.show();

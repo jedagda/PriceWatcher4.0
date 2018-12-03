@@ -10,6 +10,10 @@ public class ItemListModel extends DefaultListModel<Item>{
 
     }
 
+    public ItemListModel(DefaultListModel<Item> newListModel){
+        this.itemListModel = newListModel;
+    }
+
     public Item getItem(int index){
         return itemListModel.getElementAt(index);
     }

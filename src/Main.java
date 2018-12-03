@@ -11,9 +11,6 @@ public class Main {
 
 
     private Main() {
-        item = new Item("Test", "Test.com");
-        itemListModel.addElement(item);
-        itemListModel.addElement(new Item("Test2","test2.com"));
 
         //UIBuilder = new UIBuilder(itemManager);
         UIBuilder = new UIBuilder(itemListModel);

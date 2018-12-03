@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class AddItemDialogPanel extends JPanel {
+public class ItemDialogPanel extends JPanel {
     JLabel nameLabel;
     JTextField nameField;
 
@@ -15,7 +15,7 @@ public class AddItemDialogPanel extends JPanel {
     JLabel imageNameLabel;
     JTextField imageNameField;
 
-    AddItemDialogPanel() {
+    ItemDialogPanel() {
 
         nameLabel = new JLabel("Item Name");
         nameField = new JTextField();
@@ -28,7 +28,20 @@ public class AddItemDialogPanel extends JPanel {
 
         add(urlLabel);
         add(urlField);
+    }
 
+    ItemDialogPanel(String editName, String editURL) {
+        nameLabel = new JLabel("Item Name");
+        nameField = new JTextField(editName);
+
+        urlLabel = new JLabel("Link");
+        urlField = new JTextField(editURL);
+
+        add(nameLabel);
+        add(nameField);
+
+        add(urlLabel);
+        add(urlField);
 
     }
     public Dimension getPreferredSize(){
