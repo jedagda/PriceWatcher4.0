@@ -1,12 +1,11 @@
 import controller.PriceCrawler;
 import item.Item;
-import item.ItemManager;
+import item.ItemListModel;
 import resources.Resources;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URI;
 import java.util.HashMap;
 
 
@@ -23,7 +22,6 @@ public class UIBuilder extends JFrame{
     static final private String [] BUTTONS =  {ADDITEM, REMOVE, UPDATE, EDIT, CHECKPRICE, SORT, ABOUT, EXIT};
 
 
-    private static UIBuilder UIBuilder;
     /** The main frame of Price Watcher 4.0 */
     private JFrame mainFrame;
     /** The menu bar */
@@ -36,13 +34,6 @@ public class UIBuilder extends JFrame{
      */
      ToolBar toolBar;
 
-    /**
-     * List of menu actions of the menu bar
-     * */
-    private JMenuItem add;
-    private JMenuItem check;
-    private JMenuItem about;
-    private JMenuItem exit;
 
     /**
      * JPanel where items will be displayed on
@@ -72,55 +63,57 @@ public class UIBuilder extends JFrame{
 
     private Listener listener = new Listener();
 
-    /** Special panel to display the watched item. */
-    private ItemView itemView;
-
     private HashMap<String, String[]> mapOfActions;
 
     private PopupMenu pop = new PopupMenu();
 
-    private ItemManager itemManager = new ItemManager();
 
-    private JList<Item> itemList;
-
-    private  DefaultListModel<Item> listModel;
+    private ItemListModel itemListModel;
 
 
-
-
+    private void setItemListModel(ItemListModel itemListModel){
+        this.itemListModel = itemListModel;
+    }
     /**
      * Main Constructor of UIBuilder class
      * */
-    protected UIBuilder(ItemManager itemManager){
+    protected UIBuilder(ItemListModel itemListModel) {
+        setItemListModel(itemListModel);
         mapOfActions = actionMapLoader();
-        prepareGUI(itemManager);
-       // mainFrame.add(pop);
+        prepareGUI();
+
         showMessage("Welcome to Price Watcher");
         mainFrame.setVisible(true);
-    }
 
-
-
-    public UIBuilder getUI(){
-        return UIBuilder;
     }
 
     /**
      *  Prepares the GUI's layout
      * */
-    private void prepareGUI(ItemManager itemManager) {
+    private void prepareGUI() {
         setMainFrame();
         setCloser();
-        setItemBoard(itemManager);
+        setItemBoard();
         setStatusLabel();
         addControlPanel();
         addMenuBarElements();
         addMainFrameElements();
-
         mainFrame.setJMenuBar(menuBar);
     }
 
-
+    /**
+     *  Sets the item board from where the items will be displayed
+     */
+    private JList<Item> itemJList = new JList<>();
+    private void setItemBoard() {
+        itemBoard = new JPanel();
+        itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
+        itemJList = new JList<>(itemListModel);
+        itemJList.setFixedCellHeight(120);
+        itemJList.setCellRenderer(new ItemRenderer());
+        itemBoard.add(itemJList);
+        itemBoard.setLayout(new GridLayout(1,1));
+    }
 
     /**
      * Set's the main frame's title, dimensions, and layout
@@ -157,73 +150,6 @@ public class UIBuilder extends JFrame{
         return panel;
     }
 
-
-
-    /**
-     *  Sets the item board from where the items will be displayed
-     */
-    private void setItemBoard(ItemManager itemManager){
-
-        itemBoard = new JPanel();
-        itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
-
-        itemList = convertListToJList(itemManager);
-        itemList.setFixedCellHeight(120);
-        itemList.setCellRenderer(new ItemRenderer());
-        itemBoard.add(itemList);
-        itemBoard.setLayout(new GridLayout(1,1));
-       // itemBoard.setSize(mainFrame.getMinimumSize());
-
-    }
-
-    private void updateBoard(ItemManager itemManager){
-        itemList = convertListToJList(itemManager);
-        itemList.setFixedCellHeight(120);
-        if(itemBoard.getComponentCount() > 0){
-            itemBoard.remove(0);
-        }
-        itemBoard.add(itemList);
-        itemList.setCellRenderer(new ItemRenderer());
-    }
-
-    public void setItemList(JPanel board, ItemManager itemManager){
-        itemList = convertListToJList(itemManager);
-        itemList.setFixedCellHeight(160);
-        JScrollPane listScroll = new JScrollPane(itemList);
-        if(board.getComponentCount() > 0){
-            board.remove(0);
-        }
-        board.add(listScroll);
-        board.updateUI();
-        itemList.setCellRenderer(new ItemRenderer());
-    }
-
-    public void rePrintItemBoard(ItemManager itemManager){
-        setItemBoard(itemManager);
-    }
-
-    public void setItemList(ItemManager itemManager){
-        setItemBoard(itemManager);
-    }
-
-    public JList<Item> convertListToJList(ItemManager itemManager){
-        listModel = new DefaultListModel<>();
-        for(int i = 0; i < itemManager.count(); i++){
-
-         //   System.out.println(itemManager.getItems().get(i).getName());
-            listModel.addElement(itemManager.getItemAtI(i));
-        }
-        itemList = new JList<>(listModel);
-        return itemList;
-    }
-
-    public ItemManager getItemManager(){
-        return itemManager;
-    }
-
-    public JPanel getItemBoard(){
-        return this.itemBoard;
-    }
 
 
     private void buildPopupMenu(JPanel itemView){
@@ -342,7 +268,6 @@ public class UIBuilder extends JFrame{
 
     }
 
-
     /** Show briefly the given string in the message bar.
      *  Code by: Yoonsik Cheon
      *  */
@@ -444,15 +369,19 @@ public class UIBuilder extends JFrame{
         public void actionPerformed(ActionEvent actionEvent) {
             String command = actionEvent.getActionCommand();
             if (command.equals("Add")) {
+
                 addItemDialog(actionEvent);
                 showMessage("Item Added");
+
             } else if (command.equals("Check")) {
+
                 PriceCrawler priceCrawler = new PriceCrawler();
-                for(int i = 0; i < itemManager.count(); i++){
-                    itemManager.getItemAtI(i).setPrice(priceCrawler.randomPrice());
-                    System.out.println(itemManager.getItemAtI(i).getPrice());
+                for(int i = 0; i < itemListModel.getSize(); i++){
+                    itemListModel.getElementAt(i).setPrice(priceCrawler.randomPrice());
+                    System.out.println(itemListModel.getElementAt(i).getPrice());
                 }
-                updateBoard(itemManager);
+                itemJList.repaint();
+
                 showMessage("New Price Obtained");
             } else if (command.equals("About")) {
                 aboutAppDialog(actionEvent);
@@ -466,7 +395,7 @@ public class UIBuilder extends JFrame{
 
         JDialog dialog;
         private void addItemDialog(ActionEvent evt){
-            AddItemDialog addItemDialog = new AddItemDialog(UIBuilder.this, itemManager, itemList, listModel);
+            AddItemDialog addItemDialog = new AddItemDialog(UIBuilder.this, itemJList, itemListModel);
             if(dialog == null){
                 dialog = addItemDialog;
             }

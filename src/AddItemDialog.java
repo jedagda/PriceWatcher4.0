@@ -1,7 +1,7 @@
 
 
 import item.Item;
-import item.ItemManager;
+import item.ItemListModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,19 +12,17 @@ public class AddItemDialog extends JDialog {
     private JPanel bottom;
     private JButton addButton, cancelButton;
     private AddItemDialogPanel dialogPanel;
-    private UIBuilder ui;
-    private ItemManager itemManager;
-    private JList itemList;
-    private DefaultListModel<Item> listModel;
+    private JList itemJList;
+    private ItemListModel itemListModel;
 
    // private ItemManager itemManager;
 
 
-    public AddItemDialog(JFrame owner, ItemManager itemManager, JList itemList, DefaultListModel<Item> listMode){
+    public AddItemDialog(JFrame owner, JList itemJList, ItemListModel itemListModel){
         super(owner, true);
-        this.itemManager= itemManager;
-        this.itemList = itemList;
-        this.listModel = listMode;
+
+        this.itemJList = itemJList;
+        this.itemListModel = itemListModel;
         setTitle("Add New Item");
         addButton = new JButton("Add");
         cancelButton = new JButton("Cancel");
@@ -41,23 +39,13 @@ public class AddItemDialog extends JDialog {
         getContentPane().add(dialogPanel, BorderLayout.CENTER);
     }
 
-    public ItemManager setItemManager(){
-        return this.itemManager;
-    }
-
-/*    public void printList(ItemManager itemManager){
-        for (int i = 0; i < itemManager.count(); i++ ){
-            System.out.println(itemManager.getItemAtI(i).getName());
-        }
-    } */
     class ButtonHandler implements ActionListener{
         public void actionPerformed(ActionEvent evt){
             JButton button = (JButton) evt.getSource();
             String label = button.getText();
             if("Add".equals(label)){
-                itemManager.addItem(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
-                listModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
-                itemList.repaint();
+                itemListModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
+                itemJList.repaint();
                 System.out.println("Item Added");
 
             }

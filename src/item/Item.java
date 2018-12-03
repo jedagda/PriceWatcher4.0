@@ -129,9 +129,11 @@ public class Item {
     }
 
 
+    public void setName(String newName) {
+        this.name = newName;
+    }
 
-
-
-
-
+    public void setURL(String newURL) {
+        this.url = newURL;
+    }
 }

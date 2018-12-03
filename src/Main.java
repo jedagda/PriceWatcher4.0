@@ -1,16 +1,22 @@
-import item.ItemManager;
+import item.Item;
+import item.ItemListModel;
 
 import javax.swing.*;
 
 public class Main {
-    private JFrame main;
+
     private UIBuilder UIBuilder;
-    private ItemManager itemManager = new ItemManager();
+    private ItemListModel itemListModel = new ItemListModel();
+    private Item item;
 
 
     private Main() {
+        item = new Item("Test", "Test.com");
+        itemListModel.addElement(item);
+        itemListModel.addElement(new Item("Test2","test2.com"));
 
-        UIBuilder = new UIBuilder(itemManager);
+        //UIBuilder = new UIBuilder(itemManager);
+        UIBuilder = new UIBuilder(itemListModel);
 
 
 
@@ -18,6 +24,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
         new Main();
 
     }
