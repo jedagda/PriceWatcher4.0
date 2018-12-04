@@ -110,10 +110,8 @@ public class UIBuilder extends JFrame{
         itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
         itemJList = new JList<>(itemListModel);
         itemJList.setFixedCellHeight(120);
-
         itemJList.setCellRenderer(new ItemRenderer());
         itemBoard.add(itemJList);
-        /* works but not right Fix Later */
         itemBoard.add(new JScrollPane(itemJList));
         buildPopupMenu(itemJList);
         itemBoard.setLayout(new GridLayout(1,1));
@@ -161,40 +159,15 @@ public class UIBuilder extends JFrame{
 
         editMenu.add(manufactureMenuItem("Update", mapOfActions));
         editMenu.add(manufactureMenuItem("Edit",mapOfActions));
-
         editMenu.add(manufactureMenuItem("Remove", mapOfActions));
-
-        JMenuItem remove = new JMenuItem("Remove");
-        remove.setActionCommand("Remove");
-        remove.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = jList.getSelectedIndex();
-                itemListModel.removeElementAt(index);
-            }
-        });
-        editMenu.add(remove);
-
 
         jList.setComponentPopupMenu(editMenu);
 
         jList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 JList theList = (JList) e.getSource();
-                if(e.getClickCount() == 2){
-                    int index = theList.locationToIndex(e.getPoint());
-                    if(index >= 0 ){
-                        Object o = theList.getModel().getElementAt(index);
-                        System.out.println("Double CLicked on: " + o.toString());
-                    }
-                }
                 if(e.getButton() == MouseEvent.BUTTON3){
                     editMenu.show(jList, e.getX(), e.getY());
-                    int index = theList.locationToIndex(e.getPoint());
-                    if(index >= 0 ){
-                        Object o = theList.getModel().getElementAt(index);
-                        System.out.println("Double CLicked on: " + o.toString());
-                    }
                 }
 
             }
@@ -410,6 +383,7 @@ public class UIBuilder extends JFrame{
 
                 int index = itemJList.getSelectedIndex();
                 itemListModel.removeElementAt(index);
+
                 showMessage("Item Removed");
 
             } else if (command.equals("Edit")){
@@ -425,6 +399,7 @@ public class UIBuilder extends JFrame{
                 for (int i = 0; i < itemListModel.getSize(); i++) {
                     itemListModel.getElementAt(i).setPrice(priceCrawler.randomPrice());
                     System.out.println(itemListModel.getElementAt(i).getPrice());
+
                 }
                 itemJList.repaint();
                 showMessage("New Price Obtained");
