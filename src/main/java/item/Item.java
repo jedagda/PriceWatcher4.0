@@ -2,6 +2,10 @@ package item;
 
 import controller.PriceCrawler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /*
  * Item class stores information of an item
  */
@@ -19,6 +23,8 @@ public class Item {
     private double change;
     /** Date when the price was added */
     private String dateAdded;
+
+    private DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     public Item(){
 
@@ -41,26 +47,17 @@ public class Item {
         this.initialPrice = 0;
         this.price = initialPrice;
         this.change = 0;
-        this.dateAdded = null;
+        this.dateAdded = sdf.format(new Date());;
     }
 
 
-    public Item(String name, String url, String dateAdded, String image){
-        this.name = name;
-        this.url = url;
-        this.initialPrice = 0;
-        this.price = initialPrice;
-        this.change = 0;
-        this.dateAdded = dateAdded;
-    }
-
-    public Item(String name, String url, double initialPrice, String dateAdded){
+    public Item(String name, String url, double initialPrice){
         this.name = name;
         this.url = url;
         this.initialPrice = initialPrice;
         this.price = initialPrice;
         this.change = 0;
-        this.dateAdded = dateAdded;
+        this.dateAdded = sdf.format(new Date());
     }
 
     /**

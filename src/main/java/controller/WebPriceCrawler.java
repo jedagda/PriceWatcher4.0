@@ -1,5 +1,6 @@
 package controller;
 
+import item.Item;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,12 +20,17 @@ public class WebPriceCrawler extends PriceCrawler{
     private String itemName;
     private String itemPrice;
 
+
     public WebPriceCrawler(String url) throws IOException {
         findPrice(url);
     }
 
     public String getItemName(){
         return this.itemName;
+    }
+
+    public double getInitialPrice(){
+        return Double.parseDouble(this.itemPrice);
     }
 
     public void findPrice(String url) throws IOException{

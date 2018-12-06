@@ -16,10 +16,10 @@ public class ItemDialog extends JDialog {
     private ItemDialogPanel dialogPanel;
     private JList itemJList;
     private ItemListModel itemListModel;
-    int index;
+    private int index;
+    private WebPriceCrawler crawler;
 
    // private ItemManager itemManager;
-
 
     public ItemDialog(JFrame owner, JList itemJList, ItemListModel itemListModel){
         super(owner, true);
@@ -75,7 +75,7 @@ public class ItemDialog extends JDialog {
         public void actionPerformed(ActionEvent evt){
             JButton button = (JButton) evt.getSource();
             String label = button.getText();
-            WebPriceCrawler crawler;
+
             if("Check".equals(label)){
                 try {
                     crawler = new WebPriceCrawler(dialogPanel.urlField.getText());
@@ -87,7 +87,8 @@ public class ItemDialog extends JDialog {
                 }
             }
             else if("Add".equals(label)){
-                itemListModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
+                itemListModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText(), crawler.getInitialPrice()));
+               // itemListModel.addElement(new Item(dialogPanel.nameField.getText(), dialogPanel.urlField.getText()));
                 itemJList.repaint();
                 System.out.println("Item Added");
                 dialogPanel.reset();

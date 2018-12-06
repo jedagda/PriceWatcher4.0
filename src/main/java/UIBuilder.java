@@ -1,4 +1,5 @@
 import controller.PriceCrawler;
+import controller.WebPriceCrawler;
 import item.Item;
 import item.ItemListModel;
 import resources.Resources;
@@ -6,6 +7,7 @@ import resources.Resources;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -22,6 +24,7 @@ public class UIBuilder extends JFrame{
     static final private String [] BUTTONS =  {ADDITEM, REMOVE, UPDATE, EDIT, CHECKPRICE, SORT, ABOUT, EXIT};
 
 
+    private  WebPriceCrawler crawler;
     /** The main frame of Price Watcher 4.0 */
     private JFrame mainFrame;
     /** The menu bar */
@@ -407,7 +410,12 @@ public class UIBuilder extends JFrame{
             } else if(command.equals("Update")) {
                 PriceCrawler priceCrawler = new PriceCrawler();
                 int index = itemJList.getSelectedIndex();
-                itemListModel.getElementAt(index).setPrice(priceCrawler.randomPrice());
+                try {
+                    crawler = new WebPriceCrawler(itemListModel.getElementAt(index).getURL());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                itemListModel.getElementAt(index).setPrice(crawler.getInitialPrice());
                 showMessage("New Price Obtained for: " + itemListModel.getElementAt(index).getName());
 
             } else if (command.equals("Sort")){
