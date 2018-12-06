@@ -19,8 +19,6 @@ public class Item {
     private double change;
     /** Date when the price was added */
     private String dateAdded;
-    /** Image of the Item */
-    private String image;
 
     public Item(){
 
@@ -40,22 +38,29 @@ public class Item {
     public Item (String name, String url){
         this.name = name;
         this.url = url;
-        this.initialPrice = new PriceCrawler().randomPrice();
+        this.initialPrice = 0;
         this.price = initialPrice;
         this.change = 0;
-        this.dateAdded = "11/15/18";
-        this.image = name;
+        this.dateAdded = null;
     }
 
 
     public Item(String name, String url, String dateAdded, String image){
         this.name = name;
         this.url = url;
-        this.initialPrice = new PriceCrawler().randomPrice();
+        this.initialPrice = 0;
         this.price = initialPrice;
         this.change = 0;
         this.dateAdded = dateAdded;
-        this.image = image;
+    }
+
+    public Item(String name, String url, double initialPrice, String dateAdded){
+        this.name = name;
+        this.url = url;
+        this.initialPrice = initialPrice;
+        this.price = initialPrice;
+        this.change = 0;
+        this.dateAdded = dateAdded;
     }
 
     /**
@@ -114,10 +119,6 @@ public class Item {
 
     public String getDateAdded(){
         return dateAdded;
-    }
-
-    public String getImage(){
-        return image;
     }
 
     public String getPriceToString(){

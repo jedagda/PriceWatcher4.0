@@ -15,6 +15,10 @@ public class ItemDialogPanel extends JPanel {
     JLabel imageNameLabel;
     JTextField imageNameField;
 
+    public void setNameLabel(String name){
+        this.nameField = new JTextField(name);
+    }
+
     ItemDialogPanel() {
 
         nameLabel = new JLabel("Item Name");

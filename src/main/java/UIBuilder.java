@@ -107,7 +107,7 @@ public class UIBuilder extends JFrame{
     private JList<Item> itemJList = new JList<>();
     private void setItemBoard() {
         itemBoard = new JPanel();
-        itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createLineBorder(Color.GRAY)));
+        itemBoard.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10,16,0,16), BorderFactory.createEmptyBorder()));
         itemJList = new JList<>(itemListModel);
         itemJList.setFixedCellHeight(120);
         itemJList.setCellRenderer(new ItemRenderer());
@@ -441,11 +441,8 @@ public class UIBuilder extends JFrame{
         private void editItemDialog(ActionEvent evt){
             int index = itemJList.getSelectedIndex();
             ItemDialog editItemDialog = new ItemDialog(UIBuilder.this, itemJList, itemListModel, index);
-            if(dialog == null){
-                dialog = editItemDialog;
-            }
-            dialog.setBounds(0,0,350,300);
-            dialog.show();
+            editItemDialog.setBounds(0,0,350,300);
+            editItemDialog.show();
         }
         private void addItemDialog(ActionEvent evt){
             ItemDialog itemDialog = new ItemDialog(UIBuilder.this, itemJList, itemListModel);
